@@ -390,17 +390,23 @@ elementosDeUnaRama EmptyT = []
 elementosDeUnaRama (NodeT a t1 t2) = a : elementosDeUnaRama t1 ++ elementosDeUnaRama t2
 
 --12
-todosLosCaminos :: Tree a -> [[a]]
+--todosLosCaminos :: Tree a -> [[a]]
 --Dado un árbol devuelve todos los caminos, es decir, los caminos desde la raiz hasta las hojas.
---todosLosCaminos EmptyT = []
-todosLosCaminos(NodeT a t1 t2) = [a : arbolALista2 t1] ++ [a : arbolALista2 t2]
-                                            --unirListasDeListas (arbolALista2 (todosLosCaminos t1)) (arbolALista2 (todosLosCaminos t2))
-                                            --todosLosCaminos (arbolALista2 t1) ++ todosLosCaminos (arbolALista t2)
+--todosLosCaminos EmptyT = 
+--todosLosCaminos(NodeT x t1 t2) =  subtarea (x       todosLosCaminos t1             todosLosCaminos t2)
+--agregar x con una subtarea a todas las listas de listas
 -- me deberia dar [[1,2,4,8],[1,2,5],[1,2],[1,3,6,9],[1,3,7],[1,3],[],[1]] arbol fidel
 
-
-
 -- [ [],[1],[1,2],[1,2,4],[1,2,4,8],[1,2,5],[1,3],[1,3,6],[1,3,7] ] ejemplo discord de fidel
+{-todosLosCaminos EmptyT = []
+todosLosCaminos (NodeT a t1 t2) =  raizAHojas a t1 ++ todosLosCaminos t2
+
+raizAHojas :: a -> Tree a -> [[a]]
+raizAHojas _ EmptyT = []
+raizAHojas x (NodeT a t1 t2) = [x : [a]]  ++  raizAHojas x t1 ++ raizAHojas x t2-}
+
+--todosLosCaminos EmptyT
+--todosLosCaminos(NodeT a t1 t2) =  a             t1       todosLosCaminos t2
 
 {-arbolALista :: Tree a -> [Tree a]
 arbolALista EmptyT = []
@@ -412,7 +418,14 @@ arbolALista2 :: Tree a -> [a]
 arbolALista2 EmptyT = []
 arbolALista2 (NodeT a t1 t2) = if not (esHoja t1) || not (esHoja t2) 
                                then a : arbolALista2 t1 ++ arbolALista2 t2
-                               else  arbolALista2 t1 ++  arbolALista2 t2
+                               else arbolALista2 t1 ++  arbolALista2 t2
+
+{-raizEHijos :: Tree a -> [[a]]
+raizEHijos EmptyT = []
+raizEHijos(NodeT a t1 t2) = [a : [elementoArbol t1]] ++ raizEHijos t2-}
+
+
+
 
 {-caminoARaices :: Tree a -> [[a]]
 caminoARaices EmptyT = []
