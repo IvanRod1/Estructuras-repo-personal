@@ -352,7 +352,7 @@ miloDeveloper = Developer Junior pacopaco
 solDeveloper = Developer Senior zomboid
 volDeveloper = Developer SemiSenior zomboid
 
-stean = ConsEmpresa [juanDeveloper,mikeManagement,joseDeveloper,polaManagement,miloDeveloper,solDeveloper,volDeveloper]
+stean = ConsEmpresa [volDeveloper,juanDeveloper,mikeManagement,joseDeveloper,polaManagement,miloDeveloper,solDeveloper]
 
 
 --A
@@ -468,9 +468,9 @@ rolesImplicadosEnElProyecto p (x:xs) = if nombreProyecto p == nombreProyecto(pro
                                        else rolesImplicadosEnElProyecto p xs
 
 --D
---asignadosPorProyecto :: Empresa -> [(Proyecto, Int)]
+asignadosPorProyecto :: Empresa -> [(Proyecto, Int)]
 --Devuelve una lista de pares que representa a los proyectos (sin repetir) junto con su cantidad de personas involucradas.
---asignadosPorProyecto e = proyectosConSuCantidadDeEmpleados (proyectos e) (rolesEmpresa e)
+asignadosPorProyecto e = proyectosConSuCantidadDeEmpleados (proyectos e) (rolesEmpresa e)
 
 {-proyectosConSuCantidadDeEmpleados :: [Proyecto] -> [Rol] -> [(Proyecto,Int)]
 -- Dado una lista de proyectos y una empresa, devuelve una lista de tuplas las cuales contienen los proyectos con la cantidad de roles que hay en cada proyecto
@@ -499,10 +499,9 @@ proyectosConSuCantidadDeEmpleados _ [] = []
 proyectosConSuCantidadDeEmpleados (x:xs) (y:ys) = 
                                                   --(x, cantidadDeRolesEnProyecto x (y:ys)) : proyectosConSuCantidadDeEmpleados xs (y:ys)
   
-  
-  
+
                                                    if  esProyecto x y || hayProyectoEnLaListaDeRoles x ys  --(nombreProyecto x) == nombreProyecto(proyectoDeUnRol y) || estaElProyectoEnLaListaDeRoles x ys
-                                                   then (x, cantidadDeRolesEnProyecto x ys) : proyectosConSuCantidadDeEmpleados xs (agregarAlFinal ys y)
+                                                   then (x, cantidadDeRolesEnProyecto x (agregarAlFinal ys y)) : proyectosConSuCantidadDeEmpleados xs (agregarAlFinal ys y) 
                                                    else proyectosConSuCantidadDeEmpleados xs ys
 
 
@@ -523,7 +522,7 @@ hayRolEnListaProyectos r (x:xs) = esProyecto x r || hayRolEnListaProyectos r xs
 {-proyectosConSuCantidadDeEmpleados :: [Proyecto] -> Empresa -> [(Proyecto,Int)]
 -- Dado una lista de proyectos y una empresa, devuelve una lista de tuplas las cuales contienen los proyectos con la cantidad de roles que hay en cada proyecto
 -- proyectosConSuCantidadDeEmpleados (proyectos stean) (rolesEmpresa stean)
-proyectosConSuCantidadDeEmpleados [] _ = []
+proyectosConSuCantidadDeEmpleados [] _ = []                                                                recorro la lista de roles entera una igual a la cantidad de elementos que tenga la lista de proyectos
 proyectosConSuCantidadDeEmpleados (x:xs) e = proyectoConSuCantidadDeEmpleados x e : proyectosConSuCantidadDeEmpleados xs e-}
 
 --proyectosConSuCantidadDeEmpleados(x:xs) lr = (x,longitud(rolesImplicadosEnElProyecto x lr)) : proyectosConSuCantidadDeEmpleados xs lr <- Viejo
