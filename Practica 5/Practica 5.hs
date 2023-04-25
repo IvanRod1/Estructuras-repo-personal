@@ -102,7 +102,10 @@ unirTodos :: Eq a => Tree (Set a) -> Set a
 --del arbol.
 unirTodos EmptyT = emptyS
 unirTodos (NodeT xs t1 t2) = unionS xs (unionS (unirTodos t1)  (unirTodos t2))
+
                             --Set (xs ++ unirTodos t1 ++ unirTodos t2)
+
+
 
 pertenece :: Eq a => a -> [a] -> Bool
 pertenece  e [] = False
