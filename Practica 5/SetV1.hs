@@ -2,6 +2,7 @@ module SetV1
 (Set,emptyS,addS,belongs,sizeS,removeS, unionS,) where
 
 data Set a = Set [a]
+data Tree a = EmptyT | NodeT a (Tree a) (Tree a) deriving Show
 
 emptyS :: Set a 
 addS :: Eq a => a -> Set a -> Set a 

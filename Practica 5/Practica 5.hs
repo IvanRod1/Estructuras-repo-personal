@@ -52,14 +52,14 @@ partir n xs = (takeN n xs, dropN n xs)
 
 minimo :: Ord a => [a] -> a
 minimo [x] = x
-minimo (x:xs) = min x (minimo xs)
+minimo (x:xs) = min x (minimo xs) cuadratico
 
 sacar :: Eq a => a -> [a] -> [a]
 sacar n [] = []
 sacar n (x:xs) =
                 if n == x
                 then xs
-                else x : sacar n xs
+                else x : sacar n xs lineal
 
 ordenar :: Ord a => [a] -> [a]
 ordenar [] = []
@@ -80,15 +80,30 @@ losQuePertenecen (x:xs) s = if belongs x s
                              then x : losQuePertenecen xs s
                              else losQuePertenecen xs s
 
+{-losQuePertenecen(x:xs) s = if sizeS(x:xs) == 0
+                           then []
+                           else if belongs x s 
+                                then x : losQuePertenecen xs s
+                                else losQuePertenecen xs s-}
+
 sinRepetidos :: Eq a => [a] -> [a]
 sinRepetidos [] = []
-sinRepetidos (x:xs) = if belongs x xs
+sinRepetidos (x:xs) = if pertenece x xs
                       then sinRepetidos xs
                       else x : sinRepetidos xs
+{-sinRepetidos (x:xs) = if sizeS(x:xs) == 0
+                      then []
+                      else if belongs x xs
+                      then sinRepetidos xs
+                      else x : sinRepetidos xs-}
 
 unirTodos :: Eq a => Tree (Set a) -> Set a 
 --Dado un arbol de conjuntos devuelve un conjunto con la union de todos los conjuntos
 --del arbol.
-unirTodos NodeT EmptyT = Set []
-unirTodos (NodeT ((Set xs) t1 t2)) = Set (xs ++ unirTodos t1 ++ unirTodos t2)
+unirTodos EmptyT = emptyS
+unirTodos (NodeT xs t1 t2) = unionS xs (unionS (unirTodos t1)  (unirTodos t2))
+                            --Set (xs ++ unirTodos t1 ++ unirTodos t2)
 
+pertenece :: Eq a => a -> [a] -> Bool
+pertenece  e [] = False
+pertenece e (x:xs) = e == x  || pertenece e xs
