@@ -66,7 +66,9 @@ ordenar [] = []
 orderar xs = let m = minimo xs in m : ordenar (sacar m xs)
 
 -}
-import SetV1
+--import SetV1
+import SetV2
+import QueueV1
 
 data Tree a = EmptyT | NodeT a (Tree a) (Tree a) deriving Show
 

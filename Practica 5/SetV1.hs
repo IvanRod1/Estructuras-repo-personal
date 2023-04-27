@@ -71,4 +71,4 @@ pertenece e (x:xs) = e == x  || pertenece e xs
    dequeue :: Queue a -> Queue a
    dequeue (Q xs ys) =
                  let(xs',ys') =  devolverListasModificadas xs ys
-                 in Q xs' ys' 
+                 in Q xs' ys' -}
