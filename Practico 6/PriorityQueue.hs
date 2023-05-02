@@ -22,8 +22,3 @@ borrarMin xs = borrar (minimum xs) xs
 borrar :: Eq a => a -> [a] -> [a]
 borrar x [] = []
 borrar x (y:ys) = if x == y then ys else y : borrar x ys
-
-heapSort :: Ord a => [a] -> [a]
-heapSort [] = 
-heapSort (x:xs) = if x < minimum xs
-                  then........
