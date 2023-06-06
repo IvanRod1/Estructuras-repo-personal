@@ -108,10 +108,21 @@ int sumatoria(LinkedList xs)
 {
     int suma = 0;
     ListIterator i = getIterator(xs);
-    while(xs->primero != NULL)
+    while(i->current != NULL)//(xs->primero != NULL)
     {
         suma += i->current->elem;
         Next(i);
     }
     return suma;
+}
+
+void Sucesores(LinkedList xs)
+{
+    ListIterator i = getIterator(xs);
+    while(xs->primero != NULL)
+    {
+        i->current->elem++;
+        Next(i);
+
+    }
 }

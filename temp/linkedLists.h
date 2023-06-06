@@ -19,3 +19,4 @@ void DisposeIterator(ListIterator ixs);
 void DestroyL(LinkedList xs);
 //-----------------
  int sumatoria(LinkedList xs);
+ void Sucesores(LinkedList xs);
