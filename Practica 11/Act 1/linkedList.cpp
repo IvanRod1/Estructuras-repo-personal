@@ -60,25 +60,26 @@ void Snoc(int x, LinkedList xs)
     NodoL* elemN = new NodoL;
     elemN -> elem = x;
     elemN -> siguiente = NULL;
-    NodoL* current = xs->primero;
+    //NodoL* current = xs->primero;
 
     NodoL* temp = xs->primero;
 
-    /*while(xs->primero->siguiente != NULL)
+    while(xs->primero->siguiente != NULL)
     {   
+        cout << "Estoy mirando el elemento" << xs->primero->elem << endl;
         xs->primero = xs->primero->siguiente;
-    }*/
+    }
 
     /*for (int i = 0; i < xs->cantidad; i++)
     {
         xs->primero = xs->primero->siguiente;
     }*/
 
-    while(current != NULL)
+    /*while(current != NULL)
     {   
         xs->primero = xs->primero->siguiente;
         current= current ->siguiente;
-    }
+    }*/
 
     
     xs->primero->siguiente = elemN;
@@ -191,15 +192,28 @@ int minimo(LinkedList xs)
 {
     int min = xs->primero->elem;
     ListIterator it = getIterator(xs);
+    //Next(it);
+    if(xs->cantidad < 2)
+    {
+        return min;
+    }
     Next(it);
-    for (int i = 0; i <= xs->cantidad; i++)
+    while(it->current != NULL)
+    {
+        if(it->current->elem > min)
+        {
+            min= it->current->elem
+        }
+        Next(it);
+    }
+    /*for (int i = 0; i <= xs->cantidad; i++)
     {
         if(it->current->elem < min)
         {
             min = it->current->elem;
         }
         Next(it);
-    }
+    }*/
     
     return(min);
 }
@@ -210,7 +224,9 @@ int main()
     
     Cons(5,list);
     Cons(20,list);
+    cout << "Agregue el 20";
     Snoc(1,list);
+    cout << "Agregue el 1";
 
     ListIterator i = getIterator(list);
     Next(i);
