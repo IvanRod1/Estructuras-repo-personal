@@ -153,7 +153,7 @@ flareon = ConsPokemon Fuego 7800
 venasaur = ConsPokemon Planta 7600
 
 entrenador = ConsEntrenador "Kal" [flareon,venasaur]
-
+entrenador2 = ConsEntrenador "Kalo" [venasaur]
 
 cantPokemon :: Entrenador -> Int
 cantPokemon (ConsEntrenador _ []) = 0 
@@ -188,19 +188,49 @@ cantidadPokemonDeTipo_ t (x:xs) = unoSiCeroSino (igualdadDeTipos t (tipo x)) + c
 ---------------------------------------------------------------------------------------------------------------
 
 cuantosDeTipo_De_LeGananATodosLosDe_ :: TipoDePokemon -> Entrenador -> Entrenador -> Int
-cuantosDeTipo_De_LeGananATodosLosDe_ t (ConsEntrenador _ []) (ConsEntrenador _ ys) = 
-cuantosDeTipo_De_LeGananATodosLosDe_ t (ConsEntrenador _ xs) (ConsEntrenador _ []) = 
-cuantosDeTipo_De_LeGananATodosLosDe_ t (ConsEntrenador _ xs) (ConsEntrenador _ ys) = 
+cuantosDeTipo_De_LeGananATodosLosDe_ t e1 e2 = cantidadDePokemonQueLesGananATodos (pokemonesDeTipo_De_ t e1) (listaPokemon e2)
+
+
+cantidadDePokemonQueLesGananATodos ::  [Pokemon] -> [Pokemon] -> Int
+--Indica la cantidad de pokemones de la primer lista que le ganan a todos los pokemon de la segunda lista
+cantidadDePokemonQueLesGananATodos [] [] = 0
+cantidadDePokemonQueLesGananATodos [] ys = 0
+cantidadDePokemonQueLesGananATodos (x:xs) ys = unoSiCeroSino(leGanaATodos x ys) + cantidadDePokemonQueLesGananATodos xs ys
 
 
 pokemonesDeTipo_De_ :: TipoDePokemon -> Entrenador -> [Pokemon]
-pokemonesDeTipo_De_ t (ConsEntrenador _ []) = 0
+--Describe una lista de pokemon del tipo dado
+pokemonesDeTipo_De_ t (ConsEntrenador _ []) = []
 pokemonesDeTipo_De_ t (ConsEntrenador _ xs) = pokemonesDe_ t xs
 
 pokemonesDe_ :: TipoDePokemon -> [Pokemon] -> [Pokemon]
+--Describe la lista de pokemon del tipo dado
 pokemonesDe_ t [] = []
 pokemonesDe_ t (x:xs) = if igualdadDeTipos t (tipo x) then x : pokemonesDe_ t xs else pokemonesDe_ t xs
 
--- (pokemons filtrados) (pokemons de e2)
--- if esTipoSuperior (tipo x) (tipo y)
--- then  
+
+leGanaATodos :: Pokemon -> [Pokemon] -> Bool
+-- indica si el pokemon le gana a todos los pokemon de la lista
+leGanaATodos pk [] = True 
+leGanaATodos pk (x:xs) = superaA pk x && leGanaATodos pk xs
+
+superaA :: Pokemon -> Pokemon -> Bool
+superaA p1 p2 = esTipoSuperior (tipo p1) (tipo p2)
+
+esTipoSuperior :: TipoDePokemon -> TipoDePokemon -> Bool
+esTipoSuperior Agua Fuego = True
+esTipoSuperior Fuego Planta = True
+esTipoSuperior Planta Agua = True
+esTipoSuperior _ _ = False
+
+listaDePokemon_LeGanaATodos :: [Pokemon] -> [Pokemon] -> Bool 
+--Indica si todos los pokemon de la primer lista le ganan a todos los pokemon de la segunda lista de pokemon
+listaDePokemon_LeGanaATodos [] [] = False
+listaDePokemon_LeGanaATodos [] ys = True 
+listaDePokemon_LeGanaATodos (x:xs) ys = leGanaATodos x ys && listaDePokemon_LeGanaATodos xs ys
+
+listaPokemon :: Entrenador -> [Pokemon]
+--Denota la lista de pokemon de un Entrenador
+listaPokemon (ConsEntrenador _ xs) = xs
+
+ 
