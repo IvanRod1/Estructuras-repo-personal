@@ -152,7 +152,7 @@ gyarados = ConsPokemon Agua 10000
 flareon = ConsPokemon Fuego 7800
 venasaur = ConsPokemon Planta 7600
 
-entrenador = ConsEntrenador "Kal" [flareon,venasaur]
+entrenador = ConsEntrenador "Kal" [flareon,venasaur,gyarados]
 entrenador2 = ConsEntrenador "Kalo" [venasaur]
 
 cantPokemon :: Entrenador -> Int
@@ -233,4 +233,73 @@ listaPokemon :: Entrenador -> [Pokemon]
 --Denota la lista de pokemon de un Entrenador
 listaPokemon (ConsEntrenador _ xs) = xs
 
- 
+------------------------------------------------------------------------------------------------------------------
+esMaestroPokemon :: Entrenador -> Bool
+esMaestroPokemon e = tieneTodosLosTipos (listaPokemon e)
+
+tieneTodosLosTipos :: [Pokemon] -> Bool
+tieneTodosLosTipos [] = False
+tieneTodosLosTipos xs = tieneTipoFuego xs && tieneTipoAgua xs && tieneTipoPlanta xs 
+
+tieneTipoFuego :: [Pokemon] -> Bool
+tieneTipoFuego [] = False 
+tieneTipoFuego (x:xs) = esTipoFuego (tipo x) || tieneTipoFuego xs
+
+esTipoFuego :: TipoDePokemon -> Bool
+esTipoFuego Fuego = True
+esTipoFuego _ = False 
+
+tieneTipoAgua :: [Pokemon] -> Bool 
+tieneTipoAgua [] = False 
+tieneTipoAgua (x:xs) = esTipoAgua (tipo x) || tieneTipoAgua xs
+
+esTipoAgua :: TipoDePokemon -> Bool 
+esTipoAgua Agua = True
+esTipoAgua _ = False 
+
+tieneTipoPlanta :: [Pokemon] -> Bool
+tieneTipoPlanta [] = False 
+tieneTipoPlanta (x:xs) = esTipoPlanta (tipo x) || tieneTipoPlanta xs
+
+esTipoPlanta :: TipoDePokemon -> Bool 
+esTipoPlanta Planta = True 
+esTipoPlanta _ = False 
+
+----------------------------------------------------------------------------------------------------------------------
+data Seniority = Junior | SemiSenior | Senior deriving Show 
+data Proyecto = ConsProyecto String deriving Show 
+data Rol = Developer Seniority Proyecto | Management Seniority Proyecto deriving Show 
+data Empresa = ConsEmpresa [Rol] deriving Show 
+
+developer = Developer Junior (ConsProyecto "x")
+management = Management Senior (ConsProyecto "yt")
+empresa = ConsEmpresa [developer,developer,developer,management,management]
+
+
+proyectos :: Empresa -> [Proyecto]
+proyectos (ConsEmpresa xs) = proyectosSinRepetir (proyectosListaRol xs)
+
+proyectoDeRol :: Rol -> Proyecto
+proyectoDeRol (Developer _ prj) = prj
+proyectoDeRol (Management _ prj) = prj 
+
+proyectosListaRol :: [Rol] -> [Proyecto]
+--Dado una lista de roles, devuelve una lista de proyectos
+proyectosListaRol [] = []
+proyectosListaRol (x:xs) = proyectoDeRol x : proyectosListaRol xs
+
+
+proyectosSinRepetir :: [Proyecto] -> [Proyecto]
+--Dado una lista de proyectos, devuelve una lista de proyectos que no esten repetidos
+proyectosSinRepetir [] = []
+proyectosSinRepetir (x:xs) = if elProyectoEstaRepetido x xs then proyectosSinRepetir xs else x : proyectosSinRepetir xs 
+
+elProyectoEstaRepetido :: Proyecto -> [Proyecto] -> Bool
+--Indica si el proyecto dado esta repetido en la lista de proyectos
+elProyectoEstaRepetido x [] = False 
+elProyectoEstaRepetido x (y:ys) = nombreProyecto x == nombreProyecto y || elProyectoEstaRepetido x ys
+
+nombreProyecto :: Proyecto -> String
+nombreProyecto (ConsProyecto s) = s
+
+----------------------------------------------------------------------------------------------------------------------------
