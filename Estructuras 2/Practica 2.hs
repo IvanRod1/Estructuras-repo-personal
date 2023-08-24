@@ -303,3 +303,48 @@ nombreProyecto :: Proyecto -> String
 nombreProyecto (ConsProyecto s) = s
 
 ----------------------------------------------------------------------------------------------------------------------------
+
+losDevSenior :: Empresa -> [Proyecto] -> Int
+losDevSenior e [] = 0
+losDevSenior e (x:xs) = cantDevSeniorEn (rolesEmpresa e) x + losDevSenior e xs 
+
+cantDevSeniorEn :: [Rol] -> Proyecto -> Int
+cantDevSeniorEn [] _ = 0
+cantDevSeniorEn (x:xs) y = if esSenior x && nombreProyecto(proyectoDeRol x) == nombreProyecto   y then 1 + cantDevSeniorEn xs y else cantDevSeniorEn xs y 
+
+
+esSenior :: Rol -> Bool
+esSenior (Developer Senior _ ) = True
+esSenior (Management Senior _ ) = True
+esSenior _ = False 
+
+rolesEmpresa :: Empresa -> [Rol]
+rolesEmpresa (ConsEmpresa xs) = xs 
+
+------------------------------------------------------------------------------------------------------------------------------------------
+cantQueTrabajanEn :: [Proyecto] -> Empresa -> Int
+cantQueTrabajanEn [] _ = 0
+cantQueTrabajanEn (x:xs) e = cantidadPersonasDe_TrabajandoEn_ (rolesEmpresa e) x + cantQueTrabajanEn xs e 
+
+cantidadPersonasDe_TrabajandoEn_ :: [Rol] -> Proyecto -> Int
+--Indica la cantidad de personas trabajando en el proyecto dado que foman parte de la lista de rol dada
+cantidadPersonasDe_TrabajandoEn_ [] _ = 0 
+cantidadPersonasDe_TrabajandoEn_ (x:xs) y = if nombreProyecto (proyectoDeRol x) == nombreProyecto y then 1 + cantidadPersonasDe_TrabajandoEn_ xs y  else  cantidadPersonasDe_TrabajandoEn_ xs y
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--asignadosPorProyecto :: Empresa -> [(Proyecto, Int)]
+--asignadosPorProyecto e = proyectosConSuCantidadDeGente (proyectos e) (rolesEmpresa e)
+
+
+{-proyectosConSuCantidadDeGente :: [Proyecto] -> [Rol] -> [(Proyecto,Int)]
+proyectosConSuCantidadDeGente _  [] = []
+proyectosConSuCantidadDeGente [] _ =  []
+proyectosConSuCantidadDeGente (x:xs) ys = (x, cantidadPersonasDe_TrabajandoEn_ ys x) : proyectosConSuCantidadDeGente xs ys-}
+
+proyectosConSuCantidadDeGente :: [Rol] -> [(Proyecto,Int)]
+proyectosConSuCantidadDeGente [] = []
+proyectosConSuCantidadDeGente (x:xs) = if 
+        [(proyectoDeRol x, (cantidadPersonasDe_TrabajandoEn_ xs (proyectoDeRol x)) + 1)] ++ proyectosConSuCantidadDeGente xs 
+
+
