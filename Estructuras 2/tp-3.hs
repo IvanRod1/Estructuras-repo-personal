@@ -129,7 +129,7 @@ perteneceT x (NodeT y t1 t2) = x == y || perteneceT x t1 || perteneceT x t2
 
 leaves :: Tree a -> [a]
 leaves EmptyT = []
-leaves (NodeT x t1 t2) = if esArbolVacio t1 && esArbolVacio t2 then x : leaves t1 ++ leaves t2 else leaves t1 ++ leaves t2
+leaves (NodeT x t1 t2) = if esArbolVacio t1 && esArbolVacio t2 then [x] else leaves t1 ++ leaves t2
 
 esArbolVacio :: Tree a -> Bool
 esArbolVacio EmptyT = True
