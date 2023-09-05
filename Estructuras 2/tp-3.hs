@@ -156,5 +156,6 @@ toList (NodeT x t1 t2) = toList t1 ++ [x] ++ toList t2
 
 levelN :: Int -> Tree a -> [a]
 levelN _ EmptyT = []
-levelN 0 (NodeT y _ _ ) = [y]
-levelN x (NodeT y t1 t2) = if x > 0 then levelN (x - 1) t1 ++ levelN (x - 1) t2 else y : levelN x t1 ++ levelN x t2
+--levelN 0 (NodeT y _ _ ) = [y]
+--levelN x (NodeT y t1 t2) = if x > 0 then levelN (x - 1) t1 ++ levelN (x - 1) t2 else y : levelN x t1 ++ levelN x t2
+levelN  x (NodeT y t1 t2) = if x == 0 then [y] else levelN (x - 1) t1 ++ levelN (x - 1)
