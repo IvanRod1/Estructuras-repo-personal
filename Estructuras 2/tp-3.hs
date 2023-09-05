@@ -159,3 +159,7 @@ levelN _ EmptyT = []
 --levelN 0 (NodeT y _ _ ) = [y]
 --levelN x (NodeT y t1 t2) = if x > 0 then levelN (x - 1) t1 ++ levelN (x - 1) t2 else y : levelN x t1 ++ levelN x t2
 levelN  x (NodeT y t1 t2) = if x == 0 then [y] else levelN (x - 1) t1 ++ levelN (x - 1) t2
+
+
+
+todosloscaminos(Nodet x t1 t2) = agregarA x (todosLosCaminos t1 ++ todosLosCaminos t2)
