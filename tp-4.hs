@@ -113,7 +113,8 @@ caminoIzquierdo (Bifurcacion _ m1 _) = m1
 caminoAlTesoro :: Mapa -> [Dir]
 --Precondicion: Debe existir solamente  un tesoro en el mapa
 caminoAlTesoro (Fin c) = if esCofreConTesoro c then [] else error "Debe existir algun tesoro en el mapa"
-caminoAlTesoro (Bifurcacion c m1 m2) = if hayTesoro m1 then Izq : caminoAlTesoro m1 else Der : caminoAlTesoro m2
+caminoAlTesoro (Bifurcacion c m1 m2) = if esCofreConTesoro c then [] else if hayTesoro m1 then Izq : caminoAlTesoro m1 else Der : caminoAlTesoro m2
+                                                                            
 
 ------------------------------------------------------------------------------------------------------------------
 
@@ -158,7 +159,7 @@ data Sector = S SectorId [Componente] [Tripulante] deriving Show
 
 type SectorId = String
 
-type Tripulante = String
+type Tripulante = String 
 
 data Tree a = EmptyT | NodeT a (Tree a) (Tree a) deriving Show
 
@@ -169,7 +170,7 @@ nave1 = N (NodeT sector1 EmptyT (NodeT sector2 EmptyT EmptyT))
 
 
 sector1 = S "123" [LanzaTorpedos, (Motor 1000),(Almacen [Oxigeno])] ["Jose"]
-sector2 = S "456" [(Motor 400), (Almacen [Comida,Comida,Oxigeno,Combustible])] ["Pablo"]
+sector2 = S "456" [(Motor 400), (Almacen [Comida,Comida,Oxigeno,Combustible])] ["Pablo","Jose"]
 
 sectores :: Nave -> [SectorId]
 sectores (N t) =  sectoresT t
@@ -230,26 +231,57 @@ barrilDe (Almacen xs) = xs
 ---------------------------------------------------------------------------------------------------------------------------
 
 agregarASector :: [Componente] -> SectorId -> Nave -> Nave
-agregarASector cs sid n = agregarListaComponentesAlSector_En_ cs sid n
+--agregarASector cs sid n = agregarListaComponentesAlSector_En_ cs sid n
+agregarASector cs sid (N t) = N (agregarComponentesAlSector cs sid t)
 
-agregarListaComponentesAlSector_En_ :: [Componente] -> SectorId -> Nave -> Nave 
-agregarListaComponentesAlSector_En_ cs sid (N t) = N (agregarComponentesAlSector cs sid t)
+{-agregarListaComponentesAlSector_En_ :: [Componente] -> SectorId -> Nave -> Nave              --- sin usar
+agregarListaComponentesAlSector_En_ cs sid (N t) = N (agregarComponentesAlSector cs sid t)-}
 
 agregarComponentesAlSector :: [Componente] -> SectorId -> Tree Sector -> Tree Sector
 agregarComponentesAlSector _ _ EmptyT = EmptyT 
-agregarComponentesAlSector cs sid t = if existeSector sid t then agregarComponentes cs sid t else t 
-
-existeSector :: SectorId -> Tree Sector -> Bool
-existeSector _ EmptyT = False 
-existeSector sid (NodeT x s1 s2) = sid == sectorId x || existeSector sid s1 || existeSector sid s2
-
-agregarComponentes :: [Componente] -> SectorId -> Tree Sector -> Tree Sector
-agregarComponentes _ _ EmptyT = EmptyT 
-agregarComponentes cs sid (NodeT x t1 t2) = if sid == sectorId x then (NodeT (agregarComponentesA cs x) t1 t2)  else agregarComponentes cs sid t1
-agregarComponentes cs sid (NodeT x t1 t2) = if sid == sectorId x then (NodeT (agregarComponentesA cs x) t1 t2) else agregarComponentes cs sid t2
-
-almacenS :: Sector -> [Componente]
-almacenS (S _ cs _) = cs
+agregarComponentesAlSector cs sid (NodeT x t1 t2) = if sid == sectorId x then NodeT (agregarComponentesA cs x) t1 t2 else NodeT x (agregarComponentesAlSector cs sid t1) (agregarComponentesAlSector cs sid t2) 
 
 agregarComponentesA :: [Componente] -> Sector -> Sector
-agregarComponentesA x (S id cs ts) = (S id (cs ++ x) ts)
+agregarComponentesA x (S id cs ts) = (S id (x ++ cs) ts)
+
+---------------------------------------------------------------------------------------------------------------------------
+
+asignarTripulanteA :: Tripulante -> [SectorId] -> Nave -> Nave
+asignarTripulanteA tp ids (N t) = N (agregarTripulanteALosSectores tp ids t)
+
+agregarTripulanteALosSectores :: Tripulante -> [SectorId] -> Tree Sector -> Tree Sector
+agregarTripulanteALosSectores _ _ EmptyT = EmptyT
+agregarTripulanteALosSectores tp (sid:sids) (NodeT x t1 t2) = if sectorId x == sid then NodeT (agregarTripulanteASector tp x) (agregarTripulanteALosSectores tp sids t1) (agregarTripulanteALosSectores tp sids t2) else NodeT x (agregarTripulanteALosSectores tp (sid:sids) t1) (agregarTripulanteALosSectores tp (sid:sids) t2)
+
+agregarTripulanteASector :: Tripulante -> Sector -> Sector
+agregarTripulanteASector tp (S id cs ts) = (S id cs (tp : ts))
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+sectoresAsignados :: Tripulante -> Nave -> [SectorId]
+sectoresAsignados tp (N t) = sectoresAsignadosDe tp t
+
+sectoresAsignadosDe :: Tripulante -> Tree Sector -> [SectorId]
+sectoresAsignadosDe _ EmptyT = []
+sectoresAsignadosDe tp (NodeT x t1 t2) = if pertenece tp (tripulantesS x) then sectorId x : (sectoresAsignadosDe tp t1) ++ sectoresAsignadosDe tp t2 else (sectoresAsignadosDe tp t1) ++ sectoresAsignadosDe tp t2
+
+pertenece :: Eq a => a -> [a] -> Bool
+pertenece x [] = False
+pertenece x (y:ys) = x == y || pertenece x ys
+
+tripulantesS :: Sector -> [Tripulante]
+tripulantesS (S _ _ ts) = ts 
+
+------------------------------------------------------------------------------------------------------------------------------------
+tripulantes :: Nave -> [Tripulante]
+tripulantes (N t) = tripulantesDe t
+
+tripulantesDe :: Tree Sector -> [Tripulante]
+tripulantesDe EmptyT = []
+tripulantesDe (NodeT x t1 t2) = agregarSinRepetir (tripulantesS x) (tripulantesDe t1 ++ tripulantesDe t2)
+
+
+agregarSinRepetir :: Eq a => [a] -> [a] -> [a]
+agregarSinRepetir [] ys = []
+agregarSinRepetir x [] = x
+agregarSinRepetir (x:xs) ys = if pertenece x ys then agregarSinRepetir xs ys else x : agregarSinRepetir xs ys
