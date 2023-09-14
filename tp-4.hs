@@ -378,7 +378,7 @@ superioresDelCazador :: Nombre -> Manada -> [Nombre]
 superioresDelCazador n (M l) = superioresDeCazador n l 
 
 superioresDeCazador :: Nombre -> Lobo -> [Nombre]
-superioresDeCazador n (Cazador nc _ l1 l2 l3) = if n == nombreLobo l1 || n == nombreLobo l1 || n == nombreLobo l3 then nc : (superioresDeCazador n l1 ++ superioresDeCazador n l2 ++ superioresDeCazador n l3) else (superioresDeCazador n l1 ++ superioresDeCazador n l2 ++ superioresDeCazador n l3) 
+superioresDeCazador n (Cazador nc _ l1 l2 l3) = if esUnoDeLosLobos n l1 l2 l3 then nc : (superioresDeCazador n l1 ++ superioresDeCazador n l2 ++ superioresDeCazador n l3) else (superioresDeCazador n l1 ++ superioresDeCazador n l2 ++ superioresDeCazador n l3) 
 superioresDeCazador n (Explorador _ _ l1 l2) =  superioresDeCazador n l1 ++ superioresDeCazador n l2 
 superioresDeCazador n (Cria _) = []
 
@@ -386,3 +386,6 @@ nombreLobo :: Lobo -> Nombre
 nombreLobo (Cazador n _ _ _ _) = n 
 nombreLobo (Explorador n _ _ _) = n 
 nombreLobo (Cria n) = n 
+
+esUnoDeLosLobos :: Nombre -> Lobo -> Lobo -> Lobo -> Bool
+esUnoDeLosLobos n l1 l2 l3 = n == nombreLobo l1 || n == nombreLobo l1 || n == nombreLobo l3
