@@ -278,10 +278,70 @@ tripulantes (N t) = tripulantesDe t
 
 tripulantesDe :: Tree Sector -> [Tripulante]
 tripulantesDe EmptyT = []
-tripulantesDe (NodeT x t1 t2) = agregarSinRepetir (tripulantesS x) (tripulantesDe t1 ++ tripulantesDe t2)
+tripulantesDe (NodeT x t1 t2) = sinRepetidos(tripulantesS x ++ tripulantesDe t1 ++ tripulantesDe t2)
 
+sinRepetidos :: Eq a => [a] -> [a]
+sinRepetidos [] = []
+sinRepetidos (x:xs) = if pertenece x xs then sinRepetidos xs else x : sinRepetidos xs
 
-agregarSinRepetir :: Eq a => [a] -> [a] -> [a]
-agregarSinRepetir [] ys = []
-agregarSinRepetir x [] = x
-agregarSinRepetir (x:xs) ys = if pertenece x ys then agregarSinRepetir xs ys else x : agregarSinRepetir xs ys
+-------------------------------------------------------------------------------------------------------------------------------------
+type Presa = String -- nombre de presa
+
+type Territorio = String -- nombre de territorio
+
+type Nombre = String -- nombre de lobo
+
+data Lobo = Cazador Nombre [Presa] Lobo Lobo Lobo | Explorador Nombre [Territorio] Lobo Lobo | Cria Nombre deriving Show
+
+data Manada = M Lobo deriving Show
+
+manada1 = M (Cazador "Kan" ["Cebra","Jirafa","Puerco","Bisonte","Elefante","Juan"] (Explorador "Ken" ["Rio"] (Cria "Min") (Cria "Mon")) (Explorador "Kon" ["Monte"] (Cria "Man") (Cria "Mun")) (Cria "Men"))
+
+buenaCaza :: Manada -> Bool
+buenaCaza (M l) = cantidadDePresas l > cantidadCrias l 
+
+cantidadDePresas :: Lobo -> Int
+cantidadDePresas (Cazador _ ps l1 l2 l3) = longitud ps + cantidadDePresas l1 + cantidadDePresas l2 + cantidadDePresas l3
+cantidadDePresas (Explorador _ _ l1 l2) = cantidadDePresas l1 + cantidadDePresas l2
+cantidadDePresas (Cria _) = 0
+
+cantidadCrias :: Lobo -> Int
+cantidadCrias (Cazador _ _ l1 l2 l3) = cantidadCrias l1 + cantidadCrias l2 + cantidadCrias l3
+cantidadCrias (Explorador _ _ l1 l2) = cantidadCrias l1 + cantidadCrias l2
+cantidadCrias (Cria _) = 1
+
+longitud :: [a] -> Int
+longitud [] = 0
+longitud (x:xs) = 1 + longitud xs
+
+------------------------------------------------------------------------------------------------------------------
+
+elAlfa :: Manada -> (Nombre, Int)
+elAlfa (M l) = alfaSupremo(listaDeCazadores l)
+
+listaDeCazadores :: Lobo -> [(Nombre,Int)]
+listaDeCazadores (Cazador n ps l1 l2 l3) = (n,(longitud ps)) : listaDeCazadores l1 ++ listaDeCazadores l2 ++ listaDeCazadores l3
+listaDeCazadores (Explorador _ _ l1 l2) = listaDeCazadores l1 ++ listaDeCazadores l2
+listaDeCazadores (Cria _) = []
+
+alfaSupremo :: [(Nombre,Int)] -> (Nombre,Int)
+alfaSupremo (x:xs) = if elQueMasCazo x xs
+                     then x
+                     else alfaSupremo xs
+
+elQueMasCazo :: (Nombre,Int) -> [(Nombre,Int)] -> Bool
+elQueMasCazo _ [] = True
+elQueMasCazo (s,n) (x:xs) = snd (s,n) > snd x && elQueMasCazo (s,n) xs
+
+------------------------------------------------------------------------------------------------------------------------------
+
+losQueExploraron :: Territorio -> Manada -> [Nombre]
+losQueExploraron t (M l) = lobosQueExploraron t l
+
+lobosQueExploraron :: Territorio -> Lobo -> [Nombre]
+lobosQueExploraron t (Cazador _ _ l1 l2 l3) = lobosQueExploraron t l1 ++ lobosQueExploraron t l2 ++ lobosQueExploraron t l3
+lobosQueExploraron t (Explorador n ts l1 l2) = elementoEnlistaSi n (pertenece t ts) ++ lobosQueExploraron t l1 ++ lobosQueExploraron t l2
+lobosQueExploraron t (Cria _) = []
+
+elementoEnlistaSi :: a -> Bool -> [a]
+elementoEnlistaSi x y = if y then [x] else []
