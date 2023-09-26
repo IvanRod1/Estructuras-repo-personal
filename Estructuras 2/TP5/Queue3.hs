@@ -23,7 +23,7 @@ isEmptyQ (Q fs _) = null fs
 
 ----------------------------------
 
-enqueue x (Q fs bs) = (Q fs (agregarAlFinal bs x))
+enqueue x (Q fs bs) = if null fs then (Q (x : fs) bs) else (Q fs (agregarAlFinal bs x))
 
 agregarAlFinal :: [a] -> a -> [a]
 agregarAlFinal [] y = [y]
@@ -36,7 +36,7 @@ estaVacia _ = True
 
 --------------------------------------------------------------------------------------------
 
-dequeue (Q fs bs) = if null fs then emptyQ else Q (tail fs) bs
+dequeue (Q fs bs) = if null (tail fs) then (Q (reverse bs) []) else (Q (tail fs) bs)
 
 -----------------------------------------------------------------------
 firstQ (Q fs _) = head fs
