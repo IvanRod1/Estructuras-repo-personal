@@ -90,10 +90,7 @@ dropN n (x:xs) = dropN (n-1) xs
 partir :: Int -> [a] -> ([a], [a])
 partir n xs = (takeN n xs, dropN n xs)
 
---Cuadratica?
-
-{-Cubica : Por cada elemento de la estructura, se hacen operaciones
-de costo cuadrático-}
+--lineal 
 
 -------------------------------------------------------------
 
@@ -101,7 +98,7 @@ minimo :: Ord a => [a] -> a
 minimo [x] = x
 minimo (x:xs) = min x (minimo xs)
 
---Cuadratica
+--Lineal 
 -------------------------------------------------------------------
 
 sacar :: Eq a => a -> [a] -> [a]
@@ -116,11 +113,11 @@ sacar n (x:xs) = if n == x
 
 ordenar :: Ord a => [a] -> [a]
 ordenar [] = []
-orderar xs =
+ordenar xs =
             let m = minimo xs
             in m : ordenar (sacar m xs)
 
---Cuadratica ?? o Cubica??
+--Cuadratica 
 
 -----------------------------------------------------------------------
 
