@@ -1,5 +1,5 @@
 module Queue3
-(Queue,emptyQ,isEmptyQ,enqueue,dequeue)
+(Queue,emptyQ,isEmptyQ,enqueue,firstQ,dequeue)
 where
 
 data Queue a = Q [a] [a] deriving Show
