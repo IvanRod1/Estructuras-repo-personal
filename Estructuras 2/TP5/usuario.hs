@@ -87,3 +87,5 @@ agregarEnPos_ 1 x ys = (x:ys)
 agregarEnPos_ n x (y:ys) = y : agregarEnPos_ (n - 1) x ys
 
 ------------------------------------------------------------------------------------------------
+insertarEnPos 0 x st = push x st
+insertarEnPos n x st = push(top st)(insertarEnPos (n - 1) x (pop st)
