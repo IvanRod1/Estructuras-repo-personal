@@ -11,7 +11,7 @@ vacía, entonces la cola se encuentra vacía.-}
 emptyQ :: Queue a
 isEmptyQ :: Queue a -> Bool
 enqueue :: a -> Queue a -> Queue a
---firstQ :: Queue a -> a
+firstQ :: Queue a -> a
 dequeue :: Queue a -> Queue a
 
 queue1 = Q [1,2,3] [10,20,30]
@@ -37,3 +37,6 @@ estaVacia _ = True
 --------------------------------------------------------------------------------------------
 
 dequeue (Q fs bs) = if null fs then emptyQ else Q (tail fs) bs
+
+-----------------------------------------------------------------------
+firstQ (Q fs _) = head fs
