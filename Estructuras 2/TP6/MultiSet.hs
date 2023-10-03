@@ -1,8 +1,9 @@
+import Map
 module MultiSet
 (MultiSet,emptyMS,addMS,ocurrencesMS,unionMS,intersectionMS,multiSetToList)
 where
 
-data MultiSet a = MS a Int
+data MultiSet a = MS (Map a Int)
 
 emptyMS :: MultiSet a
 
@@ -14,22 +15,28 @@ unionMS :: Ord a => MultiSet a -> MultiSet a -> MultiSet a
 
 intersectionMS :: Ord a => MultiSet a -> MultiSet a -> MultiSet a 
 
-multiSetToList :: Eq a => MultiSet a -> [(a, Int)]
+multiSetToList :: MultiSet a -> [(a, Int)]
 
 
 ----------------------------------------------------------------------
 
-emptyMS = MS []
+emptyMS = MS (emptyM) -- O(1)
 
 -------------------------------------------------------------------
 
-addMS x (MS []) = MS [x]
-addMS x (MS (y:ys)) = if x <= y then MS (x:y:ys) else addMS y (addMS x (MS ys))
+{-addMS x (MS []) = MS [x]
+addMS x (MS (y:ys)) = if x <= y then MS (x:y:ys) else addMS y (addMS x (MS ys))-}
+addMS x (MS mp) = case lookup x mp of                           --O(lookup...) + O(assoc)
+                  Just y -> MS (assocM x (y + 1) mp)
+                  Nothing -> MS (assocM x 1 mp)
 
 ---------------------------------------------------------------------
 
-ocurrencesMS x (MS []) = 0
-ocurrencesMS x (MS (y:ys)) = if x == y then 1 + ocurrencesMS x (MS ys) else ocurrencesMS x (MS ys)
+{-ocurrencesMS x (MS []) = 0
+ocurrencesMS x (MS (y:ys)) = if x == y then 1 + ocurrencesMS x (MS ys) else ocurrencesMS x (MS ys)-}
+ocurrencesMS x (MS mp) = case lookup x mp of                           --O(lookup...)
+                         Just y -> y
+                         Nothing -> 0
 
 ---------------------------------------------------------------------
 
@@ -50,11 +57,10 @@ pertenece x [] = False                  --O(n)
 pertenece x (y:ys) = x == y || pertenece x ys
 
 -----------------------------------------------------------------------------------------------------------------
+{-multiSetToList (MS []) = []
+multiSetToList (MS (x:xs)) = (x,(apariciones x xs) + 1) : multiSetToList (MS (sacar x xs))-}
 
-multiSetToList (MS []) = []
-multiSetToList (MS (x:xs)) = (x,(apariciones x xs) + 1) : multiSetToList (MS (sacar x xs))
+multiSetToList(MS mp) = mapToList mp
 
 
-apariciones :: Eq a => a -> [a] -> Int
-apariciones x [] = 0
-apariciones x (y:ys) = if x == y then 1 + apariciones x ys else apariciones x ys
+
