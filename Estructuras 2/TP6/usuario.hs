@@ -30,7 +30,7 @@ listToMap (kv:kvs) = assocM (fst kv) (snd kv) (listToMap kvs)       --O(n)
 ------------------------------------------------------------------------------------
 
 mapToList :: Eq k => Map k v -> [(k, v)]
-mapToList m = claveValorALista (keys m) m -- eficiencia O(n)
+mapToList m = claveValorALista (keys m) m -- eficiencia O(n) * O(n)
 
 claveValorALista :: Eq k => [k] -> Map k v -> [(k,v)]
 claveValorALista [] _ = []
