@@ -42,18 +42,12 @@ soloValor (Just a) = a
 
 ---------------------------------------------------------------------------------------
 
-{-agruparEq :: Eq k => [(k, v)] -> Map k [v]
-agruparEq [] = 
-agruparEq (kv:kvs) = if laClaveEstaRepetida (fst kv) kvs then 
-
-laClaveEstaRepetida :: Eq k => k -> [(k,v)] -> Bool
-laClaveEstaRepetida k [] = False 
-laClaveEstaRepetida k (kv:kvs) = k == (fst kv) || laClaveEstaRepetida k kvs 
-
-agregarValor :: (k,v) -> [(k,v)] -> Map k [v]
-agregarValor kv [] = M [(fst kv , [snd kv])]
-agregarValor kv1 (kv:kvs) = if fst (kv1) == fst (kv) then  else -}
-
+agruparEq :: Eq k => [(k, v)] -> Map k [v]
+agruparEq [] = emptyM
+agruparEq (kv:kvs) =  case lookup (fst kv) (agruparEq xs) of 
+                      Just x -> assocM k (v:x) (agruparEq kvs)
+                      Nothing -> assocM (fst k) ([snd v]) (agruparEq kvs)
+{-O(n) * ((O(assocM fst kv snd kv)) + O(lookup fst kv snd kv))  donde n es la cantidad de elementos de la lista de tupla -}
 --------------------------------------------------------------------------------------------
 
 incrementar :: Eq k => [k] -> Map k Int -> Map k Int
@@ -93,3 +87,18 @@ cantOcurrencias _ [] = 0                                                        
 cantOcurrencias x (y:ys) = if x == y then 1 + cantOcurrencias x ys else cantOcurrencias x ys
 
 ---------------------------------------------------------------------------------------------------
+heapSort :: Ord a => [a] -> [a]
+heapSort xs = pqToList (listToPq xs) 
+
+listToPq :: Ord a => [a] -> PriorityQueue a
+listToPq [] = emptyPQ                        --O(insertPQ x xs) * O(n) + O(emptyPQ) = O(n2)
+listToPq (x:xs) = insertPQ x (listToPq xs)
+
+----------------------------------------------------------------------------------------------------
+
+ocurrenciasMS :: Ord a => [a] -> [(a,Int)]
+ocurrenciasMS cs = multisetToList(listToMS cs)
+
+listToMS :: Ord a => [a] -> MultiSet a
+listToMS [] = emptyMS
+listToMs (x:xs) = addMS a (listToMs xs)
