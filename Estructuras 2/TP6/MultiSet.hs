@@ -2,7 +2,7 @@ module MultiSet
 (MultiSet,emptyMS,addMS,ocurrencesMS,unionMS,intersectionMS,multiSetToList)
 where
 
-data MultiSet a = MS [a]
+data MultiSet a = MS a Int
 
 emptyMS :: MultiSet a
 
