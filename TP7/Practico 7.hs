@@ -79,21 +79,21 @@ splitMaxBST (NodeT x t1 t2) = (maxBST t2, delMaxBST t2)  --O(log n)
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 {-esBST :: Tree a -> Bool
-esBST EmptyT = 
-esBST (NodeT x t1 t2) = -}
+esBST EmptyT = False
+esBST (NodeT x t1 t2) = sonMayoresA x && sonMenoresA x t1
 
 {-Invariante de BST: en (NodeT x ti td)
 ❏ todos los elementos de ti son menores que x
-❏ todos los elementos de td son mayores que x
-❏ ti y td también cumplen el invariante de BST-}
+❏ todos los elementos de td son mayores que x       --O(N2)
+❏ ti y td también cumplen el invariante de BST-}-
 
-{-sonMenoresA :: Ord a => a -> Tree a -> Bool 
+sonMenoresA :: Ord a => a -> Tree a -> Bool 
 sonMenoresA _ EmptyT = False
-sonMenoresA x (NodeT y t1 _) = x > y && (sonMenoresA y t1) 
+sonMenoresA x (NodeT y t1 t2) = x > y && (sonMenoresA x t1) && (sonMenoresA x t2) 
 
 sonMayoresA :: Ord a => a -> Tree a -> Bool 
-sonMayoresA _ EmptyT = False 
-sonMayoresA x (NodeT y _ t2) = x < y && (sonMayoresA y t2)-}
+sonMayoresA _ EmptyT = False            
+sonMayoresA x (NodeT y t1 t2) = x < y && (sonMayoresA x t1) && (sonMayoresA x t2)-}
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -101,15 +101,49 @@ elMaximoMenorA :: Ord a => a -> Tree a -> Maybe a
 {-Propósito: dado un BST y un elemento, devuelve el máximo elemento que sea menor al
 elemento dado.
 Costo: O(log N)-}
-elMaximoMenorA _ EmptyT = Nothing
-elMaximoMenorA x (NodeT y t1 t2) = if x > y && esElMaximoMenor y t1 t2 then (Just y) else if x < y then elMaximoMenorA x t1 else elMaximoMenorA x t2
+{-elMaximoMenorA _ EmptyT = Nothing
+elMaximoMenorA x (NodeT y t1 t2) = if x > y && esElMaximoMenor y t1 t2 then (Just y) else if x < y then elMaximoMenorA x t1 else elMaximoMenorA x t2-}
 
-esElMaximoMenor :: Ord a => a -> Tree a -> Tree a -> Bool
+elMaximoMenorA _ EmptyT = Nothing
+elMaximoMenorA x t1 = if belongsBST x t1 then Just (elemento(arbolMenor(findBST x t1))) else buscarMaximoMenor x t1
+
+esElMaximoMenor :: Ord a => a -> Tree a -> Tree a->Bool
 esElMaximoMenor  x _ EmptyT = True 
-esElMaximoMenor  x ti td = x > maxBST td  
+esElMaximoMenor  x t1 t2 = x > maxBST t2 --O(log n)
 
 esArbolVacio :: Tree a -> Bool
 esArbolVacio EmptyT = True
 esArbolVacio _ = False
 
+findBST :: Ord a => a -> Tree a -> Tree a
+findBST _ EmptyT = EmptyT      --O(log n)
+findBST x (NodeT y t1 t2) = if x == y then (NodeT x t1 t2) else if x < y then findBST x t1 else findBST x t2
+
+
+elemento :: Tree a -> a  --O(1)
+elemento (NodeT x _ _) = x
+
+arbolMenor :: Tree a -> Tree a --O(1)
+arbolMenor (NodeT _ t1 _) = t1 
+
+arbolMayor :: Tree a -> Tree a --O(1)
+arbolMayor (NodeT _ _ t2) = t2
+
+
+buscarMaximoMenor :: Ord a => a -> Tree a -> Maybe a 
+buscarMaximoMenor _ EmptyT = Nothing        --O(log n) + O(log n) = O(log n)
+buscarMaximoMenor x (NodeT y t1 t2) = if x > y && esElMaximoMenor y t1 t2 then (Just y) else if x < y then buscarMaximoMenor x t1 else buscarMaximoMenor x t2
+
+-------------------------------------------------------------------------------------------------------------------------
+
+{-elMinimoMayorA :: Ord a => a -> Tree a -> Maybe a
+{-Propósito: dado un BST y un elemento, devuelve el mínimo elemento que sea mayor al
+elemento dado.
+Costo: O(log N)-}
+
+elMinimoMayorA x t1 = if belongsBST x t1 then (Just elemento(arbolMayor t1)) else buscarMinimoMayor a t1
+
+buscarMinimoMayor :: Ord a => a -> Tree a -> Maybe a
+buscarMinimoMayor _ EmptyT = 
+buscarMinimoMayor x (NodeT y t1 t2) = if x < y && esElMinimoMayor y t1 t2 then (Just y) else if x < y then -}
 
