@@ -159,7 +159,7 @@ buscarMinimoMayor x (NodeT y t1 t2) = if x < y && esElMinimoMayor y t1 t2 then (
 {-
     elMinimoMayorA :: Ord a => a -> Tree a -> Maybe a
     elMinimoMayorA _ EmptyT = 
-    elMinimoMayorA x (NodeT y t1 t2) = if x < y then (elMinimoMayorA t1 x) else (elMinimoMayorA t2 x) 
+    elMinimoMayorA x (NodeT y t1 t2) = if x < y then case emma ti x of Just v -> Just v nothing -> Just y else (elMinimoMayorA t2 x) 
 -}
 -----------------------------------------------------------------------------------------------------------------------------
 
