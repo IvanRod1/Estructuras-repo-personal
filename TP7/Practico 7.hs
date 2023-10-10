@@ -80,7 +80,7 @@ splitMaxBST (NodeT x t1 t2) = (maxBST t2, delMaxBST t2)  --O(log n)
 
 {-esBST :: Tree a -> Bool
 esBST EmptyT = False
-esBST (NodeT x t1 t2) = sonMayoresA x && sonMenoresA x t1
+esBST (NodeT x t1 t2) = sonMenoresA x ti && sonMayoresA x td && (esBST ti) && (esBST td)
 
 {-Invariante de BST: en (NodeT x ti td)
 ❏ todos los elementos de ti son menores que x
@@ -89,11 +89,11 @@ esBST (NodeT x t1 t2) = sonMayoresA x && sonMenoresA x t1
 
 sonMenoresA :: Ord a => a -> Tree a -> Bool 
 sonMenoresA _ EmptyT = False
-sonMenoresA x (NodeT y t1 t2) = x > y && (sonMenoresA x t1) && (sonMenoresA x t2) 
+sonMenoresA x (NodeT y t1 t2) = x >= y && (sonMenoresA x t1) && (sonMenoresA x t2) 
 
 sonMayoresA :: Ord a => a -> Tree a -> Bool 
 sonMayoresA _ EmptyT = False            
-sonMayoresA x (NodeT y t1 t2) = x < y && (sonMayoresA x t1) && (sonMayoresA x t2)-}
+sonMayoresA x (NodeT y t1 t2) = x <= y && (sonMayoresA x t1) && (sonMayoresA x t2)-}
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -160,3 +160,9 @@ Costo: O(log K). K es la cantidad de veces que se tiene que repetir la funcion p
 
 {-keys :: Map k v -> [k]
 Costo: O(K). K es la cantidad de claves map, por ende la funcion se va a repetir tantas K haya-} 
+
+---------------------------------------------------------------------------------------------------------------------------
+-- Para cada empleado e, valor de mp2, pertenece a algun conjunto valor de mp1 --es pisada por la segunda
+-- Para cada empleado e, valor de mp2 ,los elementos de ' sectores e' son claves de mp1 y el empleado e pertenece a los conjuntos asociados 
+-- Para cada CUIL c, clave de mp2; para el empleado e asociado a c, 'cuil e' es igual a c
+-- Para cada empleado e, que pertenece a algun conjunto de valores de mp1, e esta asociado a un CUIL en mp2
