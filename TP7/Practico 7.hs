@@ -78,9 +78,11 @@ splitMaxBST (NodeT x t1 t2) = (maxBST t2, delMaxBST t2)  --O(log n)
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-{-esBST :: Tree a -> Bool
-esBST EmptyT = False
+{-esBST :: Ord a => Tree a -> Bool
+esBST EmptyT = True
 esBST (NodeT x t1 t2) = sonMenoresA x ti && sonMayoresA x td && (esBST ti) && (esBST td)
+
+O(n * (O(n) + O(n))) = O(n2)
 
 {-Invariante de BST: en (NodeT x ti td)
 ❏ todos los elementos de ti son menores que x
@@ -88,12 +90,18 @@ esBST (NodeT x t1 t2) = sonMenoresA x ti && sonMayoresA x td && (esBST ti) && (e
 ❏ ti y td también cumplen el invariante de BST-}-
 
 sonMenoresA :: Ord a => a -> Tree a -> Bool 
-sonMenoresA _ EmptyT = False
+sonMenoresA _ EmptyT = True
 sonMenoresA x (NodeT y t1 t2) = x >= y && (sonMenoresA x t1) && (sonMenoresA x t2) 
 
+O(elementos arbol) = O(n)
+
 sonMayoresA :: Ord a => a -> Tree a -> Bool 
-sonMayoresA _ EmptyT = False            
-sonMayoresA x (NodeT y t1 t2) = x <= y && (sonMayoresA x t1) && (sonMayoresA x t2)-}
+sonMayoresA _ EmptyT = True            
+sonMayoresA x (NodeT y t1 t2) = x <= y && (sonMayoresA x t1) && (sonMayoresA x t2)
+
+O(elementos arbol) = O(n)
+
+-}
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -134,6 +142,7 @@ buscarMaximoMenor :: Ord a => a -> Tree a -> Maybe a
 buscarMaximoMenor _ EmptyT = Nothing        --O(log n) + O(log n) = O(log n)
 buscarMaximoMenor x (NodeT y t1 t2) = if x > y && esElMaximoMenor y t1 t2 then (Just y) else if x < y then buscarMaximoMenor x t1 else buscarMaximoMenor x t2
 
+
 -------------------------------------------------------------------------------------------------------------------------
 
 {-elMinimoMayorA :: Ord a => a -> Tree a -> Maybe a
@@ -147,6 +156,11 @@ buscarMinimoMayor :: Ord a => a -> Tree a -> Maybe a
 buscarMinimoMayor _ EmptyT = 
 buscarMinimoMayor x (NodeT y t1 t2) = if x < y && esElMinimoMayor y t1 t2 then (Just y) else if x < y then -}
 
+{-
+    elMinimoMayorA :: Ord a => a -> Tree a -> Maybe a
+    elMinimoMayorA _ EmptyT = 
+    elMinimoMayorA x (NodeT y t1 t2) = if x < y then (elMinimoMayorA t1 x) else (elMinimoMayorA t2 x) 
+-}
 -----------------------------------------------------------------------------------------------------------------------------
 
 {-emptyM :: Map k v
