@@ -147,3 +147,16 @@ buscarMinimoMayor :: Ord a => a -> Tree a -> Maybe a
 buscarMinimoMayor _ EmptyT = 
 buscarMinimoMayor x (NodeT y t1 t2) = if x < y && esElMinimoMayor y t1 t2 then (Just y) else if x < y then -}
 
+-----------------------------------------------------------------------------------------------------------------------------
+
+{-emptyM :: Map k v
+Costo: O(1). Porque esta funcion siempre va a devolver un map vacio-}
+
+{-assocM :: Ord k => k -> v -> Map k v -> Map k v
+Costo: O(log K). K es la cantidad de veces que se tiene que repetir la funcion para contemplar todos los casos (en promedio) (en el peor caso es O(K))-}
+
+{-deleteM :: Ord k => k -> Map k v -> Map k v
+Costo: O(log K). K es la cantidad de veces que se tiene que repetir la funcion para contemplar todos los casos (en promedio) (en el peor caso es O(K))-}
+
+{-keys :: Map k v -> [k]
+Costo: O(K). K es la cantidad de claves map, por ende la funcion se va a repetir tantas K haya-} 
