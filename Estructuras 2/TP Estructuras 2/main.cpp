@@ -5,6 +5,7 @@
 
 using namespace std;
 
+
 int main()
 {
     cout << "Inicializando equipos..." << endl;
@@ -73,6 +74,8 @@ int main()
     caso3.push_back(chile);
     caso3.push_back(panama);
     test("Caso 3", caso3);
+
+    
 
     return 0;
 }

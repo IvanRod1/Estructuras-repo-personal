@@ -29,6 +29,7 @@ void unionUFS(UFSet ufset1, UFSet ufset2);
 /* Devuelve el valor asociado a elemento de tipo UFSet */
 ELEM_TYPE elemUFS(UFSet ufset);
 
+
 #endif
 
 
