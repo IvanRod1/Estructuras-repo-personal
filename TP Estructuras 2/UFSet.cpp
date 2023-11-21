@@ -14,18 +14,15 @@
  */
 struct UFNode {
    ELEM_TYPE element;
-   UFNode* elementPrevio; //Todo ufSET sabe cual es su ufset previo y si no tiene un ufSET previo, el mismo será su previo
-   //int rank  -- modificar
+   UFNode* elementPrevio;
+   int rank;
 };
 
 /*INV.REP
 
-   - Todo UFSet que no apunte a otro UFSet que sea él mismo, se considera como el elemento distinguido
-   - 
-
-
-
-
+   - Todo UFSet que no apunte a otro UFSet que sea él mismo, se considera como el elemento distinguido.
+   - Todo UFSet valido debe reconocer su elemento, su UFSet previo y el rango que tiene, el mismo se representa con un entero mayor o igual a cero.
+   - Todo UFSet tiene un representante, ese representante es otro UFSet que tiene como UFSet previo a él mismo.
 */
 
 
@@ -36,6 +33,7 @@ UFSet createUFS(ELEM_TYPE value) {
    UFNode* ufsetN = new UFNode;
    ufsetN->element = value;
    ufsetN->elementPrevio = ufsetN;
+   ufsetN->rank= 0;
 
    return ufsetN;
 }
@@ -45,32 +43,60 @@ ELEM_TYPE elemUFS(UFSet ufset) {
    return ufset->element;
 }
 
-/*
- * Encuentra el elemento distinguido para el UFSet dado. 
- * Esta operación puede ser optimizada con la técnica de compresión de camino.
- */
 
 UFSet ufsetMaximo (UFSet elem)
 {
    while(elem->elementPrevio != elem)
    {
-      return ufsetMaximo(elem->elementPrevio);
+      elem = elem->elementPrevio;
    }
 
    return elem;
 }
 
-UFSet findUFS(UFSet elem) {
-/*Comprension de camino*/
+/*
+ * Encuentra el elemento distinguido para el UFSet dado. 
+ * Esta operación puede ser optimizada con la técnica de compresión de camino.
+ */
 
-   UFNode* aux = new UFNode;
+// VERSION ITERATIVA FIND
+
+UFSet findUFS(UFSet elem)
+{
+    UFNode* aux = createUFS(elem->element);
+
+   while(elem != elem->elementPrevio)
+   {
+
+      aux -> elementPrevio = elem->elementPrevio;
+
+      elem->elementPrevio = ufsetMaximo(elem);
+
+      elem = aux->elementPrevio;
+   }
+
+
+   delete aux;
+
+   return elem;
+}
+
+
+
+
+// VERSION RECURSIVA FIND
+/*
+UFSet findUFS(UFSet elem) {
+
+
+   UFNode* aux = createUFS(elem->element);
 
    if(elem != elem->elementPrevio)
    {
-      aux = elem->elementPrevio;
+      aux->elementPrevio = elem->elementPrevio;
       elem->elementPrevio = ufsetMaximo(elem);
 
-      return findUFS(aux);
+      return findUFS(aux->elementPrevio);
    }
    else
    {
@@ -81,32 +107,9 @@ UFSet findUFS(UFSet elem) {
 
 
 }
+*/
 
 
-
-
-/*UFSet findUFSi(UFSet elem)
-{
-   
-}*/
-
-
-
-
-int rango(UFSet ufset) // modificar. Aplicar el rango en la estructura UFSet
-{
-   /*Describe la cantidad de UFSet reccoridos desde el UFSet dado hasta su UFSet distinguido*/
-   
-   if((ufset->elementPrevio->element) == ufset->element)
-   {
-      return 0;
-   }
-   else
-   {
-      return 1 + rango(ufset->elementPrevio);
-   }
-   
-}
 
 
 /*
@@ -116,17 +119,19 @@ int rango(UFSet ufset) // modificar. Aplicar el rango en la estructura UFSet
 
 void unionUFS(UFSet ufset1, UFSet ufset2) {
 
-   if(rango(ufset1) > rango(ufset2))
+   if(findUFS(ufset1)->rank > findUFS(ufset2)->rank)
    {
-      findUFS(ufset2) -> elementPrevio = findUFS(ufset1);
+      findUFS(ufset2)->elementPrevio = findUFS(ufset1);
+      findUFS(ufset1)->rank = findUFS(ufset2)->rank + 1;
    }
    else
    {
       findUFS(ufset1) -> elementPrevio = findUFS(ufset2);
+      findUFS(ufset2)->rank = findUFS(ufset1)->rank + 1;
    }
 
-
 }
+
 
 
 /*PRE-OPTIMIZACIÓN 1 // PRE-OPTIMIZACION 2*/
@@ -151,15 +156,39 @@ void unionUFS(UFSet ufset1, UFSet ufset2) {
 
 */
 
-/*int main()
+
+
+
+
+/////////////////////////////////////////////SIN USAR////////////////////////////////////////////////////////////////////////
+
+/*
+int rango(UFSet ufset) // modificar. Aplicar el rango en la estructura UFSet
 {
-    UFSet nashi = createUFS(crearEquipo(ARGENTINA,"C"));
-    UFSet nashe = createUFS(crearEquipo(BRASIL,"A"));
-    unionUFS(nashi,nashe);
+   /*Describe la cantidad de UFSet reccoridos desde el UFSet dado hasta su UFSet distinguido
+   
+   if((ufset->elementPrevio->element) == ufset->element)
+   {
+      return 0;
+   }
+   else
+   {
+      return 1 + rango(ufset->elementPrevio);
+   }
+   
+}
+*/
 
-    cout << rango(nashe);
+/*void unionUFS(UFSet ufset1, UFSet ufset2) {
+
+   if(rango(ufset1) > rango(ufset2))
+   {
+      findUFS(ufset2) -> elementPrevio = findUFS(ufset1);
+   }
+   else
+   {
+      findUFS(ufset1) -> elementPrevio = findUFS(ufset2);
+   }
+
+
 }*/
-
-
-
-
