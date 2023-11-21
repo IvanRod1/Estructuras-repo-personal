@@ -23,6 +23,7 @@ struct UFNode {
    - Todo UFSet que no apunte a otro UFSet que sea él mismo, se considera como el elemento distinguido.
    - Todo UFSet valido debe reconocer su elemento, su UFSet previo y el rango que tiene, el mismo se representa con un entero mayor o igual a cero.
    - Todo UFSet tiene un representante, ese representante es otro UFSet que tiene como UFSet previo a él mismo.
+   - Todo UFSet tiene un rango, el cual representa el alcance máximo conocido por ese UFSet. 
 */
 
 
@@ -46,6 +47,7 @@ ELEM_TYPE elemUFS(UFSet ufset) {
 
 UFSet ufsetMaximo (UFSet elem)
 {
+   /*Propósito: Dado un UFSet, devuelve su UFSet máximo. El UFSet maximo es aquel que se tiene a él mismo como "Padre" o UFSet previo*/
    while(elem->elementPrevio != elem)
    {
       elem = elem->elementPrevio;
@@ -80,6 +82,29 @@ UFSet findUFS(UFSet elem)
 
    return elem;
 }
+
+
+/*UFSet findUFS(UFSet elem)
+{
+    UFNode* aux = createUFS(elem->element);
+
+   while(elem->elementPrevio != ufsetMaximo(elem))
+   {
+
+      aux -> elementPrevio = elem->elementPrevio;
+
+      elem->elementPrevio = ufsetMaximo(elem);
+
+      elem = aux->elementPrevio;
+   }
+
+
+   delete aux;
+
+   return elem;
+
+}*/
+
 
 
 
